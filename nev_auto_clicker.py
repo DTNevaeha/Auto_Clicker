@@ -41,35 +41,37 @@ class AutoClicker:
 class AutoClickerGUI:
     def __init__(self, root, clicker):
         self.clicker = clicker
+        frame = tk.Frame(root)
+        frame.pack()
 
-        self.button_label = tk.Label(root, text=f"Current Click: {'Left' if self.clicker.is_left_click else 'Right'}")
-        self.button_label.pack()
+        self.button_label = tk.Label(frame, text=f"Current Click: {'Left' if self.clicker.is_left_click else 'Right'}")
+        self.button_label.grid(row=0, column=0, pady=(10,0))
 
-        self.toggle_button = tk.Button(root, text="Start Clicking", command=self.toggle_clicking)
-        self.toggle_button.pack()
+        self.toggle_button = tk.Button(frame, text="Start Clicking", command=self.toggle_clicking)
+        self.toggle_button.grid(row=0, column=1)
 
-        self.click_button = tk.Button(root, text="Toggle to Right Click", command=self.toggle_click_button)
-        self.click_button.pack(pady=20)
+        self.click_button = tk.Button(frame, text="Toggle to Right Click", command=self.toggle_click_button)
+        self.click_button.grid(row=1, column=1, pady=(0,20))
         
-        self.interval_label = tk.Label(root, text=f"Current Click Interval: {self.clicker.interval} seconds")
-        self.interval_label.pack()
-        self.interval_label_2 = tk.Label(root, text=f"Enter New Speed Below")
-        self.interval_label_2.pack()
-        self.interval_entry = tk.Entry(root)
-        self.interval_entry.pack()
-        self.interval_button = tk.Button(root, text="Set Click Interval", command=self.set_interval)
-        self.interval_button.pack()
+        self.interval_label = tk.Label(frame, text=f"Click Interval: {self.clicker.interval} seconds")
+        self.interval_label.grid(row=2)
+        self.interval_label_2 = tk.Label(frame, text=f"Enter New Speed Below")
+        self.interval_label_2.grid(row=3)
+        self.interval_entry = tk.Entry(frame)
+        self.interval_entry.grid(row=4, column=0)
+        self.interval_button = tk.Button(frame, text="Set Click Interval", command=self.set_interval)
+        self.interval_button.grid(row=4, column=1)
         
+        self.counter_display = tk.Label(frame, text=f"Test Click Speed Below")
+        self.counter_display.grid(row=5, column=0, pady=(20,0))
         self.button_click_count = 0
-
-        self.counter_display = tk.Label(root, text=f"Test Click Speed Below")
-        self.counter_display.pack()
-        self.counter_button = tk.Button(root, text="Increase Counter", command=self.increase_counter)
-        self.counter_button.pack()
-        self.counter_label = tk.Label(root, text=f"Counter: {self.clicker.counter}")
-        self.counter_label.pack()
+        self.counter_label = tk.Label(frame, text=f"Counter: {self.clicker.counter}")
+        self.counter_label.grid(row=6, column=0)
+        self.counter_button = tk.Button(frame, text="Increase Counter", command=self.increase_counter)
+        self.counter_button.grid(row=6, column=1)
 
         root.protocol("WM_DELETE_WINDOW", self.on_close)
+        root.title("Nev's Auto Clicker")
 
     def toggle_clicking(self):
         if self.clicker.clicking:
@@ -100,7 +102,7 @@ class AutoClickerGUI:
         root.destroy()
 
 root = tk.Tk()
-root.geometry("300x400")  # Set the default size of the window to 500x500 pixels
+root.geometry("400x300")  # Set the default size of the window to 500x500 pixels
 clicker = AutoClicker()
 gui = AutoClickerGUI(root, clicker)
 root.mainloop()
