@@ -48,10 +48,10 @@ class AutoClickerGUI:
         self.button_label.grid(row=0, column=0, pady=(10,0))
 
         self.toggle_button = tk.Button(frame, text="Start Clicking", command=self.toggle_clicking)
-        self.toggle_button.grid(row=0, column=1)
+        self.toggle_button.grid(row=0, column=1, pady=(10,0))
 
         self.click_button = tk.Button(frame, text="Toggle to Right Click", command=self.toggle_click_button)
-        self.click_button.grid(row=1, column=1, pady=(0,20))
+        self.click_button.grid(row=1, column=1, pady=(10,20))
         
         self.interval_label = tk.Label(frame, text=f"Click Interval: {self.clicker.interval} seconds")
         self.interval_label.grid(row=2)
@@ -70,7 +70,7 @@ class AutoClickerGUI:
         self.counter_button = tk.Button(frame, text="Increase Counter", command=self.increase_counter)
         self.counter_button.grid(row=6, column=1)
 
-        self.hotkey_label = tk.Label(frame, text=f"Change keybind")
+        self.hotkey_label = tk.Label(frame, text=f"Change Keybind to Start Clicking")
         self.hotkey_label.grid(row=7, pady=(20,0))
         self.hotkey_entry = tk.Entry(frame)
         self.hotkey_entry.grid(row=8, column=0)
@@ -78,10 +78,22 @@ class AutoClickerGUI:
         self.update_hotkey_button = tk.Button(frame, text="Update Hotkey", command=self.update_hotkey)
         self.update_hotkey_button.grid(row=8, column=1)
 
+        self.hotkey_label_2 = tk.Label(frame, text=f"Change Keybind to Toggle Left/Right")
+        self.hotkey_label_2.grid(row=9, pady=(20,0))
+        self.hotkey_entry_2 = tk.Entry(frame)
+        self.hotkey_entry_2.grid(row=10, column=0)
+        self.hotkey_entry_2.insert(0, '<F2>')  # Default hotkey
+        self.update_hotkey_button_2 = tk.Button(frame, text="Update Hotkey", command=self.update_hotkey_2)
+        self.update_hotkey_button_2.grid(row=10, column=1)
+
         self.current_hotkey = self.hotkey_entry.get()
+        self.current_hotkey_2 = self.hotkey_entry_2.get()
+        root.bind(self.current_hotkey, self.on_hotkey_press)  # Bind click to on_hotkey_press
+        root.bind(self.current_hotkey_2, self.on_hotkey_press_2)  # Bind toggle_click to on_hotkey_press_2
+
         root.protocol("WM_DELETE_WINDOW", self.on_close)
         root.title("Nev's Auto Clicker")
-        root.bind(self.current_hotkey, self.on_hotkey_press)  # Bind hotkey to on_hotkey_press
+        
 
     def toggle_clicking(self):
         if self.clicker.clicking:
@@ -95,8 +107,16 @@ class AutoClickerGUI:
         self.current_hotkey = self.hotkey_entry.get()
         root.bind(self.current_hotkey, self.on_hotkey_press)  # Bind the new hotkey
 
+    def update_hotkey_2(self):
+        root.unbind(self.current_hotkey_2)  # Unbind the old hotkey
+        self.current_hotkey_2 = self.hotkey_entry_2.get()
+        root.bind(self.current_hotkey_2, self.on_hotkey_press_2)  # Bind the new hotkey
+
     def on_hotkey_press(self, event):
         self.toggle_clicking()
+    
+    def on_hotkey_press_2(self, event):
+        self.toggle_click_button()
 
     def increase_counter(self):
         self.button_click_count += 1
@@ -120,7 +140,7 @@ class AutoClickerGUI:
         root.destroy()
 
 root = tk.Tk()
-root.geometry("400x300")  # Set the default size of the window to 500x500 pixels
+root.geometry("400x400")  # Set the default size of the window to 500x500 pixels
 clicker = AutoClicker()
 gui = AutoClickerGUI(root, clicker)
 root.mainloop()
