@@ -70,8 +70,18 @@ class AutoClickerGUI:
         self.counter_button = tk.Button(frame, text="Increase Counter", command=self.increase_counter)
         self.counter_button.grid(row=6, column=1)
 
+        self.hotkey_label = tk.Label(frame, text=f"Change keybind")
+        self.hotkey_label.grid(row=7, pady=(20,0))
+        self.hotkey_entry = tk.Entry(frame)
+        self.hotkey_entry.grid(row=8, column=0)
+        self.hotkey_entry.insert(0, '<F1>')  # Default hotkey
+        self.update_hotkey_button = tk.Button(frame, text="Update Hotkey", command=self.update_hotkey)
+        self.update_hotkey_button.grid(row=8, column=1)
+
+        self.current_hotkey = self.hotkey_entry.get()
         root.protocol("WM_DELETE_WINDOW", self.on_close)
         root.title("Nev's Auto Clicker")
+        root.bind(self.current_hotkey, self.on_hotkey_press)  # Bind hotkey to on_hotkey_press
 
     def toggle_clicking(self):
         if self.clicker.clicking:
@@ -79,6 +89,14 @@ class AutoClickerGUI:
         else:
             self.toggle_button.config(text="Stop Clicking")
         self.clicker.toggle_clicking()
+    
+    def update_hotkey(self):
+        root.unbind(self.current_hotkey)  # Unbind the old hotkey
+        self.current_hotkey = self.hotkey_entry.get()
+        root.bind(self.current_hotkey, self.on_hotkey_press)  # Bind the new hotkey
+
+    def on_hotkey_press(self, event):
+        self.toggle_clicking()
 
     def increase_counter(self):
         self.button_click_count += 1
